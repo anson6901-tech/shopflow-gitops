@@ -18,8 +18,8 @@ pipeline {
 
     environment {
         AWS_REGION   = 'us-east-1'
-        ECR_ACCOUNT  = '123456789012'          // EDIT
-        GITOPS_REPO  = 'github.com/REPLACE_YOUR_USER/REPLACE_GITOPS_REPO.git'  // EDIT
+        ECR_ACCOUNT  = '010296565014'          // EDIT
+        GITOPS_REPO  = 'github.com/anson6901-tech/shopflow-gitops.git'  // EDIT
 
         IMAGE_REPO   = "shopflow-${params.SERVICE}"
         IMAGE_TAG    = "build-${BUILD_NUMBER}"
@@ -72,11 +72,11 @@ pipeline {
                     cd gitops
 
                     # Rewrite the image tag for this service in the desired state.
-                    sed -i "s|image: .*/${IMAGE_REPO}:.*|image: ${IMAGE}:${IMAGE_TAG}|" apps/shopflow/${SERVICE}.yaml
+                    sed -i "s|image: .*/${IMAGE_REPO}:.*|image: ${IMAGE}:${IMAGE_TAG}|" gitops-repo/apps/shopflow/${SERVICE}.yaml
 
                     git config user.email "jenkins@shopflow.local"
                     git config user.name  "Jenkins"
-                    git add apps/shopflow/${SERVICE}.yaml
+                    git add gitops-repo/apps/shopflow/${SERVICE}.yaml
 
                     # If the tag did not change there is nothing to commit, and that is fine.
                     git diff --cached --quiet && echo "No change to commit." && exit 0

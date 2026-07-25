@@ -21,6 +21,7 @@ pipeline {
         SERVICE_NAME = "${params.SERVICE}"
         ECR_ACCOUNT  = '010296565014'          // EDIT
         GITOPS_REPO  = 'github.com/anson6901-tech/shopflow-gitops.git'  // EDIT
+        APP_REPO     = 'https://github.com/anson6901-tech/shopflow.git'
 
         IMAGE_REPO   = "shopflow-${params.SERVICE}"
         IMAGE_TAG    = "build-${BUILD_NUMBER}"
@@ -36,6 +37,15 @@ pipeline {
             steps { checkout scm }
         }
 
+        stage('Checkout application source') {
+            steps {
+                sh '''
+                    rm -rf app-source
+                    git clone ${APP_REPO} app-source
+                '''
+            }
+        }
+
         stage('Build, test, scan') {
             steps {
                 echo 'Reuse your Project 6 stages here: build, test + coverage, SonarQube gate, Trivy dependency scan.'
@@ -46,7 +56,7 @@ pipeline {
         stage('Docker build and scan') {
             steps {
                 sh '''
-                    docker build -t ${IMAGE}:${IMAGE_TAG} services/${SERVICE_NAME}-service
+                    docker build -t ${IMAGE}:${IMAGE_TAG} app-source/services/${SERVICE_NAME}-service
                     trivy image --severity CRITICAL --ignore-unfixed --exit-code 1 --no-progress ${IMAGE}:${IMAGE_TAG}
                 '''
             }

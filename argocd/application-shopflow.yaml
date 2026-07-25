@@ -21,9 +21,9 @@ spec:
   project: default
 
   source:
-    repoURL: https://github.com/REPLACE_YOUR_USER/REPLACE_GITOPS_REPO.git
+    repoURL: https://github.com/anson6901-tech/shopflow-gitops.git
     targetRevision: main
-    path: apps/shopflow          # the folder ArgoCD watches
+    path: gitops-repo/apps/shopflow          # the folder ArgoCD watches
 
   destination:
     server: https://kubernetes.default.svc   # this cluster

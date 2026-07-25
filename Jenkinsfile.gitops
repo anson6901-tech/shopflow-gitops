@@ -56,7 +56,14 @@ pipeline {
         stage('Docker build and scan') {
             steps {
                 sh '''
-                    docker build -t ${IMAGE}:${IMAGE_TAG} app-source/services/${SERVICE_NAME}-service
+                    if [ "${SERVICE_NAME}" = "storefront" ]; then
+                        BUILD_CONTEXT="app-source/storefront"
+                    else
+                        BUILD_CONTEXT="app-source/services/${SERVICE_NAME}-service"
+                    fi
+
+                    echo "Building from ${BUILD_CONTEXT}"
+                    docker build -t ${IMAGE}:${IMAGE_TAG} "${BUILD_CONTEXT}"
                     trivy image --severity CRITICAL --ignore-unfixed --exit-code 1 --no-progress ${IMAGE}:${IMAGE_TAG}
                 '''
             }
